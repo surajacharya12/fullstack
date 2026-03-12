@@ -1,6 +1,12 @@
 "use client";
 
-import { createContext, useContext, useState, ReactNode, useEffect } from "react";
+import {
+  createContext,
+  useContext,
+  useState,
+  ReactNode,
+  useEffect,
+} from "react";
 import { saveTokens, clearTokens, getAccessToken } from "../utils/tokenStorage";
 import api from "../api/axiosInstance";
 
@@ -18,32 +24,9 @@ interface AuthProviderProps {
 }
 
 export function AuthProvider({ children }: AuthProviderProps) {
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [user, setUser] = useState<any>(null);
-  const [isMounted, setIsMounted] = useState(false);
-
-  useEffect(() => {
-    setIsMounted(true);
-    const token = getAccessToken();
-    if (token) {
-      setIsAuthenticated(true);
-      // Fetch user profile to restore state on refresh
-      api.get("/profile/")
-        .then(res => {
-          setUser(res.data);
-        })
-        .catch(() => {
-          // If profile fetch fails (e.g. token expired), log out
-          logout();
-        });
-    }
-  }, []);
-
-  const login = (accessToken: string, refreshToken: string, userData: any) => {
-    saveTokens(accessToken, refreshToken);
-    setIsAuthenticated(true);
-    setUser(userData);
-  };
+  const [loading, setLoading] = useState(true);
 
   const logout = () => {
     clearTokens();
@@ -51,7 +34,35 @@ export function AuthProvider({ children }: AuthProviderProps) {
     setUser(null);
   };
 
-  if (!isMounted) return null;
+  const login = (accessToken: string, refreshToken: string, userData: any) => {
+    saveTokens(accessToken, refreshToken);
+    setIsAuthenticated(true);
+    setUser(userData);
+  };
+
+  useEffect(() => {
+    const token = getAccessToken();
+
+    if (!token) {
+      setLoading(false);
+      return;
+    }
+
+    api
+      .get("/profile/")
+      .then((res) => {
+        setIsAuthenticated(true);
+        setUser(res.data);
+      })
+      .catch(() => {
+        logout();
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }, []);
+
+  if (loading) return null;
 
   return (
     <AuthContext.Provider value={{ isAuthenticated, user, login, logout }}>
@@ -62,8 +73,10 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
 export const useAuth = () => {
   const context = useContext(AuthContext);
+
   if (!context) {
     throw new Error("useAuth must be used within an AuthProvider");
   }
+
   return context;
 };
