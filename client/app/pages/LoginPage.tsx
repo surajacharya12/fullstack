@@ -22,14 +22,16 @@ export default function LoginPage() {
     setError("");
     setLoading(true);
     try {
-    
       const { data } = await api.post("/login/", { username, password });
-      
-     
+
       login(data.tokens.access, data.tokens.refresh, data.user);
       navigate("/dashboard", { replace: true });
     } catch (err: any) {
-      setError(err.response?.data?.error || err.response?.data?.detail || "Login failed.");
+      setError(
+        err.response?.data?.error ||
+          err.response?.data?.detail ||
+          "Login failed.",
+      );
     } finally {
       setLoading(false);
     }
@@ -63,8 +65,18 @@ export default function LoginPage() {
         >
           {loading ? "Signing in..." : "Sign In"}
         </button>
-        <p style={{ marginTop: 15, fontSize: 14, textAlign: "center", color: "#475569" }}>
-          Don't have an account? <Link to="/signup" style={{ color: "#6366f1", fontWeight: "600" }}>Sign Up</Link>
+        <p
+          style={{
+            marginTop: 15,
+            fontSize: 14,
+            textAlign: "center",
+            color: "#475569",
+          }}
+        >
+          Don't have an account?{" "}
+          <Link to="/signup" style={{ color: "#6366f1", fontWeight: "600" }}>
+            Sign Up
+          </Link>
         </p>
       </div>
     </div>
@@ -87,7 +99,13 @@ const s: { [key: string]: React.CSSProperties } = {
     width: 360,
     boxShadow: "0 4px 20px rgba(0,0,0,.12)",
   },
-  h2: { margin: "0 0 1.5rem", color: "#0f172a", fontSize: 24, fontWeight: "700", textAlign: "center" },
+  h2: {
+    margin: "0 0 1.5rem",
+    color: "#0f172a",
+    fontSize: 24,
+    fontWeight: "700",
+    textAlign: "center",
+  },
   err: {
     background: "#fee2e2",
     color: "#991b1b",
