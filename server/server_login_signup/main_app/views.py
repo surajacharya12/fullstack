@@ -21,6 +21,9 @@ class SignupView(APIView):
         if User.objects.filter(username=username).exists():
             return Response({"error": "Username already exists"}, status=status.HTTP_400_BAD_REQUEST)
 
+        if email and User.objects.filter(email=email).exists():
+            return Response({"error": "Email already exists"}, status=status.HTTP_400_BAD_REQUEST)
+
         user = User.objects.create_user(username=username, email=email, password=password)
         
         refresh = RefreshToken.for_user(user)
@@ -41,9 +44,18 @@ class LoginView(APIView):
         password = request.data.get('password')
 
         if not username or not password:
-            return Response({"error": "Username and password are required"}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"error": "Username/Email and password are required"}, status=status.HTTP_400_BAD_REQUEST)
 
+        # Try to authenticate with username
         user = authenticate(username=username, password=password)
+
+        # If username fails, try to treat 'username' as an email
+        if user is None:
+            try:
+                user_obj = User.objects.get(email=username)
+                user = authenticate(username=user_obj.username, password=password)
+            except User.DoesNotExist:
+                pass
 
         if user is not None:
             refresh = RefreshToken.for_user(user)
