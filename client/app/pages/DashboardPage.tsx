@@ -38,10 +38,15 @@ export default function DashboardPage() {
 
           <p style={styles.email}>Email: {user?.email ?? "N/A"}</p>
 
-          <p style={styles.badge}>
-            <span style={styles.badgeDot}>●</span>
-            Authenticated
-          </p>
+          <div style={styles.actionGroup}>
+            <button onClick={() => navigate("/blogs")} style={styles.blogBtn}>
+              Go to Blogs
+            </button>
+            <p style={styles.badge}>
+              <span style={styles.badgeDot}>●</span>
+              Authenticated
+            </p>
+          </div>
         </div>
 
         <p style={styles.hint}>Only authenticated users can see this page.</p>
@@ -105,6 +110,26 @@ const styles: Record<string, React.CSSProperties> = {
 
   email: {
     color: "#475569",
+    marginBottom: "1rem"
+  },
+
+  actionGroup: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginTop: "1.5rem"
+  },
+
+  blogBtn: {
+    padding: "0.75rem 1.5rem",
+    background: "#2563eb",
+    color: "#fff",
+    border: "none",
+    borderRadius: 8,
+    cursor: "pointer",
+    fontWeight: 600,
+    fontSize: "1rem",
+    boxShadow: "0 4px 6px -1px rgba(37, 99, 235, 0.2)"
   },
 
   badge: {
