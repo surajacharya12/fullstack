@@ -9,37 +9,41 @@ interface BlogItemProps {
 
 const BlogItem = ({ blog }: BlogItemProps) => {
   return (
-    <div className="flex justify-between gap-8 py-8 border-b border-gray-100 transition-all hover:bg-gray-50/30 group">
+    <div className="flex justify-between gap-10 py-10 transition-all hover:translate-x-1 group">
       <div className="flex-1">
-        <div className="flex items-center gap-2 mb-2 text-xs font-medium text-gray-800">
-          <div className="w-5 h-5 rounded-full bg-gray-200 flex items-center justify-center text-[10px] uppercase overflow-hidden">
+        <div className="flex items-center gap-3 mb-4 text-[12px] font-bold text-stone-900 tracking-tight uppercase">
+          <div className="w-6 h-6 rounded-full bg-stone-100 flex items-center justify-center text-[10px] uppercase overflow-hidden ring-1 ring-stone-200">
             {blog.author_avatar ? (
               <img src={blog.author_avatar} alt={blog.author_name} className="w-full h-full object-cover" />
             ) : (
               blog.author_name[0]
             )}
           </div>
-          <span>{blog.author_name}</span>
+          <span className="hover:underline cursor-pointer">{blog.author_name}</span>
         </div>
-        <h2 className="text-xl md:text-2xl font-bold mb-2 text-gray-900 leading-tight group-hover:text-blue-900 transition-colors" style={{ fontFamily: "'Spectral', Georgia, serif" }}>
+        
+        <h2 className="text-2xl md:text-[1.75rem] font-black mb-3 text-stone-900 leading-[1.2] group-hover:text-stone-700 transition-colors" style={{ fontFamily: "'Spectral', Georgia, serif" }}>
           {blog.title}
         </h2>
-        <p className="text-gray-500 text-sm md:text-base line-clamp-2 md:line-clamp-3 mb-4 leading-relaxed font-serif">
+        
+        <p className="text-stone-500 text-base md:text-lg line-clamp-2 md:line-clamp-3 mb-6 leading-relaxed font-serif">
           {blog.content}
         </p>
-        <div className="flex items-center gap-3 text-xs text-gray-500">
+        
+        <div className="flex items-center gap-4 text-[11px] font-black text-stone-400 tracking-[0.1em] uppercase">
           <span>{new Date(blog.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</span>
-          <span>·</span>
+          <span className="w-1 h-1 bg-stone-200 rounded-full"></span>
           <span>{Math.ceil(blog.content.length / 500)} min read</span>
-          <span className="bg-gray-100 px-2 py-0.5 rounded-full text-gray-800">{blog.topic}</span>
-          <span className="ml-auto opacity-0 group-hover:opacity-100 cursor-pointer transition-opacity">🔖</span>
+          <span className="bg-stone-50 text-stone-500 px-3 py-1 rounded-full border border-stone-100">{blog.topic}</span>
+          <span className="ml-auto opacity-0 group-hover:opacity-100 cursor-pointer transition-all hover:scale-125">🔖</span>
         </div>
       </div>
-      <div className="hidden sm:block w-32 h-24 md:w-40 md:h-28 bg-linear-to-br from-gray-50 to-gray-200 rounded-lg shrink-0 shadow-sm border border-gray-100 overflow-hidden">
+      
+      <div className="hidden sm:block w-32 h-24 md:w-52 md:h-36 bg-linear-to-br from-stone-50 to-stone-100 rounded-[2rem] shrink-0 shadow-sm border border-stone-100 overflow-hidden group-hover:shadow-md transition-all">
         {blog.image ? (
-            <img src={blog.image} alt={blog.title} className="w-full h-full object-cover" />
+            <img src={blog.image} alt={blog.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
         ) : (
-            <div className="w-full h-full flex items-center justify-center text-gray-300 italic text-[10px]">No image</div>
+            <div className="w-full h-full flex items-center justify-center text-stone-300 italic text-[10px] uppercase font-bold tracking-widest">Memoir</div>
         )}
       </div>
     </div>
