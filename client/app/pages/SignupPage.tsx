@@ -38,9 +38,7 @@ export default function SignupPage() {
     <div className="min-h-screen flex items-center justify-center bg-[#f8fafc] px-4">
       <div className="w-full max-w-[440px] bg-white rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.05)] p-10 border border-gray-50">
         <div className="text-center mb-10">
-          <h1 className="text-3xl font-black text-gray-900 mb-2 tracking-tight" style={{ fontFamily: "'Spectral', Georgia, serif" }}>
-            Simple Story Hub
-          </h1>
+            <h1 className="text-4xl font-black text-stone-900 mb-2 tracking-tight" style={{ fontFamily: "'Spectral', Georgia, serif" }}>Stanza</h1>
           <p className="text-gray-500 text-sm font-medium">Join our community of stories today.</p>
         </div>
 

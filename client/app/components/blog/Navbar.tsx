@@ -18,11 +18,11 @@ const Navbar = ({ username, onWriteClick, onLogout, onAvatarUpload }: NavbarProp
     <header className="flex justify-between items-center px-8 py-3 bg-white/80 backdrop-blur-md sticky top-0 z-50 border-b border-stone-100">
       <div className="flex items-center gap-6">
         <div 
-          className="text-stone-900 font-black text-2xl cursor-pointer tracking-tighter" 
+          className="text-stone-900 font-black text-3xl cursor-pointer tracking-tighter" 
           onClick={() => navigate(username ? "/blogs" : "/")}
           style={{ fontFamily: "'Spectral', Georgia, serif" }}
         >
-          Simple Story Hub
+          Stanza
         </div>
         <div className="hidden md:flex items-center bg-stone-50 px-5 py-2.5 rounded-full gap-3 border border-stone-100 focus-within:ring-2 focus-within:ring-stone-200 transition-all">
           <span className="text-stone-400">🔍</span>
