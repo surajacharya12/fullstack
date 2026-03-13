@@ -30,7 +30,7 @@ export default function ProfilePage() {
       setProfile(profileData);
       setNewBio(profileData.profile?.bio || "");
 
-      const userBlogs = await getBlogs(); // Assuming we filter on frontend for now or refine API later
+      const userBlogs = await getBlogs();
       setBlogs(userBlogs.filter((b: Blog) => b.author_name === profileData.username));
     } catch (err) {
       console.error("Failed to fetch profile data", err);
@@ -57,7 +57,7 @@ export default function ProfilePage() {
       setUploading(true);
       const data = new FormData();
       data.append('avatar', file);
-      
+
       await updateProfile(data);
       fetchProfileData();
     } catch (err) {

@@ -19,7 +19,7 @@ const Navbar = ({ username, onWriteClick, onLogout, onAvatarUpload }: NavbarProp
       <div className="flex items-center gap-6">
         <div 
           className="text-stone-900 font-black text-2xl cursor-pointer tracking-tighter" 
-          onClick={() => navigate("/")}
+          onClick={() => navigate(username ? "/blogs" : "/")}
           style={{ fontFamily: "'Spectral', Georgia, serif" }}
         >
           Simple Story Hub
