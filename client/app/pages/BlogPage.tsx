@@ -27,7 +27,8 @@ export default function BlogPage() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetchBlogs(activeTab === "For you" ? undefined : activeTab);
+    const topic = (activeTab === "For you" || activeTab === "Following") ? undefined : activeTab;
+    fetchBlogs(topic);
   }, [activeTab]);
 
   const fetchBlogs = async (topic?: string) => {
@@ -48,7 +49,9 @@ export default function BlogPage() {
       await createBlog(newBlog);
       setNewBlog({ title: "", content: "", topic: "Technology" });
       setShowEditor(false);
-      fetchBlogs();
+      // Refresh current tab view
+      const topic = (activeTab === "For you" || activeTab === "Following") ? undefined : activeTab;
+      fetchBlogs(topic);
     } catch (err) {
       setError("Failed to create blog");
     }
