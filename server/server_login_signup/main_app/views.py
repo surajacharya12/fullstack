@@ -7,7 +7,6 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from .serializers import UserSerializer
 from rest_framework.permissions import AllowAny
 from rest_framework.permissions import AllowAny, IsAuthenticated
-
 from .models import Blog
 from .serializers import BlogSerializer
 from rest_framework import generics
@@ -91,7 +90,7 @@ class ProfileView(APIView):
 class BlogListCreateView(generics.ListCreateAPIView):
     queryset = Blog.objects.all().order_by('-created_at')
     serializer_class = BlogSerializer
-    permission_classes = [IsAuthenticated] # Logged in users can see and create
+    permission_classes = [IsAuthenticatedOrReadOnly]
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
@@ -106,5 +105,4 @@ class BlogListCreateView(generics.ListCreateAPIView):
 class BlogDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Blog.objects.all()
     serializer_class = BlogSerializer
-    permission_classes = [IsAuthenticated, IsAuthorOrReadOnly]
-
+    permission_classes = [IsAuthenticatedOrReadOnly, IsAuthorOrReadOnly]
