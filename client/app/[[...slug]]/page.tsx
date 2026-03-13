@@ -9,6 +9,7 @@ import SignupPage from "../pages/SignupPage";
 import BlogPage from "../pages/BlogPage";
 import LandingPage from "../pages/LandingPage";
 import BlogDetailPage from "../pages/BlogDetailPage";
+import ProfilePage from "../pages/ProfilePage";
 
 export default function Home() {
   const [isMounted, setIsMounted] = useState(false);
@@ -34,6 +35,7 @@ export default function Home() {
           {/* Protected — wrapped by PrivateRoute */}
           <Route element={<PrivateRoute />}>
             <Route path="/blogs" element={<BlogPage />} />
+            <Route path="/profile" element={<ProfilePage />} />
           </Route>
 
           {/* Default redirect */}

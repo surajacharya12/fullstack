@@ -41,7 +41,7 @@ const Navbar = ({ username, onWriteClick, onLogout, onAvatarUpload }: NavbarProp
             </button>
             <div className="flex items-center gap-5">
                <div 
-                 onClick={() => avatarInputRef.current?.click()}
+                 onClick={() => navigate("/profile")}
                  className="w-10 h-10 rounded-full bg-stone-100 flex items-center justify-center text-sm font-black ring-2 ring-stone-200 uppercase cursor-pointer hover:ring-stone-900 transition-all shadow-sm overflow-hidden"
                >
                  {username[0]}

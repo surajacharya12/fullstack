@@ -42,7 +42,7 @@ export default function ProfilePage() {
   const handleUpdateBio = async () => {
     try {
       setUploading(true);
-      const updated = await updateProfile({ profile: { bio: newBio } });
+      const updated = await updateProfile({ bio: newBio });
       setProfile(updated);
       setEditing(false);
     } catch (err) {
@@ -55,10 +55,9 @@ export default function ProfilePage() {
   const handleAvatarUpload = async (file: File) => {
     try {
       setUploading(true);
-      const formData = new FormData();
-      formData.append('profile.avatar', file);
       const data = new FormData();
-      data.append('profile.avatar', file);
+      data.append('avatar', file);
+      
       await updateProfile(data);
       fetchProfileData();
     } catch (err) {
