@@ -173,3 +173,13 @@ class FollowUserView(APIView):
             return Response({"message": "Following", "is_following": True}, status=status.HTTP_201_CREATED)
         except User.DoesNotExist:
             return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
+
+class PublicProfileView(APIView):
+    permission_classes = [AllowAny]
+
+    def get(self, request, username):
+        try:
+            user = User.objects.get(username=username)
+            return Response(UserSerializer(user, context={'request': request}).data)
+        except User.DoesNotExist:
+            return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)

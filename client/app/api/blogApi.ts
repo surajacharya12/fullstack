@@ -48,3 +48,8 @@ export const toggleFollow = async (username: string) => {
   const response = await axiosInstance.post(`follow/${username}/`);
   return response.data;
 };
+
+export const getPublicProfile = async (username: string) => {
+  const response = await axiosInstance.get(`profile/${username}/`);
+  return response.data;
+};

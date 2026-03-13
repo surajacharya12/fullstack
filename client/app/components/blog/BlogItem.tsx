@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import { Blog } from "./types";
 
 interface BlogItemProps {
@@ -8,11 +9,18 @@ interface BlogItemProps {
 }
 
 const BlogItem: React.FC<BlogItemProps> = ({ blog }) => {
+  const navigate = useNavigate();
   return (
     <div className="flex flex-col md:flex-row gap-8 py-10 group transition-all duration-500 hover:bg-white/40 px-4 rounded-3xl -mx-4">
       {/* Article Info */}
       <div className="flex-1 order-2 md:order-1">
-        <div className="flex items-center gap-2.5 mb-4 group/author">
+        <div 
+          className="flex items-center gap-2.5 mb-4 group/author cursor-pointer"
+          onClick={(e) => {
+            e.stopPropagation();
+            navigate(`/profile/${blog.author_name}`);
+          }}
+        >
           <div className="w-6 h-6 rounded-full bg-stone-100 flex items-center justify-center text-[10px] font-black ring-2 ring-white shadow-sm overflow-hidden transition-transform group-hover/author:scale-110">
             {blog.author_avatar ? (
               <img src={blog.author_avatar} alt={blog.author_name} className="w-full h-full object-cover" />
@@ -20,7 +28,7 @@ const BlogItem: React.FC<BlogItemProps> = ({ blog }) => {
               blog.author_name[0]
             )}
           </div>
-          <span className="text-[11px] font-black text-stone-800 uppercase tracking-widest">{blog.author_name}</span>
+          <span className="text-[11px] font-black text-stone-800 uppercase tracking-widest hover:text-stone-500 transition-colors">{blog.author_name}</span>
         </div>
 
         <h2 className="text-2xl md:text-3xl font-black text-stone-900 mb-3 leading-snug tracking-tighter group-hover:text-stone-600 transition-colors" style={{ fontFamily: "'Spectral', Georgia, serif" }}>

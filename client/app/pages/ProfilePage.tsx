@@ -2,40 +2,64 @@
 
 import React, { useState, useEffect } from "react";
 import { useAuth } from "../context/AuthContext";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import Navbar from "../components/blog/Navbar";
-import { getProfile, updateProfile, getBlogs } from "../api/blogApi";
+import { getProfile, updateProfile, getBlogs, getPublicProfile, toggleFollow } from "../api/blogApi";
 import BlogItem from "../components/blog/BlogItem";
 import { Blog } from "../components/blog/types";
 
 export default function ProfilePage() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
+  const { username } = useParams();
   const [profile, setProfile] = useState<any>(null);
   const [blogs, setBlogs] = useState<Blog[]>([]);
   const [loading, setLoading] = useState(true);
   const [editing, setEditing] = useState(false);
   const [newBio, setNewBio] = useState("");
   const [uploading, setUploading] = useState(false);
+  const [isFollowing, setIsFollowing] = useState(false);
 
   useEffect(() => {
     fetchProfileData();
     window.scrollTo(0, 0);
-  }, []);
+  }, [username]);
 
   const fetchProfileData = async () => {
     try {
       setLoading(true);
-      const profileData = await getProfile();
+      let profileData;
+      if (username) {
+        profileData = await getPublicProfile(username);
+      } else {
+        profileData = await getProfile();
+      }
+      
       setProfile(profileData);
       setNewBio(profileData.profile?.bio || "");
+      setIsFollowing(profileData.is_following || false);
       
-      const userBlogs = await getBlogs(); 
-      setBlogs(userBlogs.filter((b: Blog) => b.author_name === profileData.username));
+      const allBlogs = await getBlogs(); 
+      setBlogs(allBlogs.filter((b: Blog) => b.author_name === profileData.username));
     } catch (err) {
       console.error("Failed to fetch profile data", err);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleFollow = async () => {
+    if (!user) {
+        navigate("/login");
+        return;
+    }
+    try {
+        const res = await toggleFollow(profile.username);
+        setIsFollowing(res.is_following);
+        // Refresh profile data to update follower counts
+        fetchProfileData();
+    } catch (err) {
+        console.error("Failed to follow", err);
     }
   };
 
@@ -119,6 +143,14 @@ export default function ProfilePage() {
                     <span className="bg-stone-100 text-stone-500 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest h-fit">
                         Author
                     </span>
+                    {user?.username !== profile.username && (
+                        <button 
+                            onClick={handleFollow}
+                            className={`px-8 py-2 rounded-full font-black text-xs uppercase tracking-widest transition-all shadow-md active:scale-95 ${isFollowing ? 'bg-stone-100 text-stone-400' : 'bg-stone-900 text-white hover:bg-stone-800'}`}
+                        >
+                            {isFollowing ? "Following" : "Follow"}
+                        </button>
+                    )}
                 </div>
 
                 <div className="mb-8">
@@ -147,13 +179,15 @@ export default function ProfilePage() {
                             </div>
                         </div>
                     ) : (
-                        <div className="group cursor-pointer" onClick={() => setEditing(true)}>
+                        <div className={`group ${user?.username === profile.username ? 'cursor-pointer' : ''}`} onClick={() => user?.username === profile.username && setEditing(true)}>
                             <p className="text-stone-600 text-lg font-serif leading-relaxed mb-4">
-                                {profile.profile?.bio || "No bio yet. Click to add a story about yourself."}
+                                {profile.profile?.bio || "No bio yet."}
                             </p>
-                            <span className="text-xs font-black text-stone-300 uppercase tracking-widest group-hover:text-stone-900 transition-colors">
-                                Edit Bio →
-                            </span>
+                            {user?.username === profile.username && (
+                                <span className="text-xs font-black text-stone-300 uppercase tracking-widest group-hover:text-stone-900 transition-colors">
+                                    Edit Bio →
+                                </span>
+                            )}
                         </div>
                     )}
                 </div>

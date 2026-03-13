@@ -2,7 +2,7 @@ from django.urls import path
 from .views import (
     SignupView, LoginView, ProfileView, 
     BlogListCreateView, BlogDetailView,
-    LikeBlogView, CommentCreateView, FollowUserView
+    LikeBlogView, CommentCreateView, FollowUserView, PublicProfileView
 )
 from rest_framework_simplejwt.views import TokenRefreshView
 
@@ -16,6 +16,7 @@ urlpatterns = [
     path('blogs/<int:pk>/like/', LikeBlogView.as_view(), name='blog-like'),
     path('comments/', CommentCreateView.as_view(), name='comment-create'),
     path('follow/<str:username>/', FollowUserView.as_view(), name='follow-user'),
+    path('profile/<str:username>/', PublicProfileView.as_view(), name='public-profile'),
 ]
 
 

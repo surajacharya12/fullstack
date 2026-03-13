@@ -100,7 +100,12 @@ export default function BlogDetailPage() {
                 </div>
                 <div>
                    <div className="flex items-center gap-3">
-                      <p className="font-black text-stone-900 text-lg uppercase tracking-tight">{blog.author_name}</p>
+                       <p 
+                          onClick={() => navigate(`/profile/${blog.author_name}`)}
+                          className="font-black text-stone-900 text-lg uppercase tracking-tight cursor-pointer hover:text-stone-600 transition-colors"
+                       >
+                          {blog.author_name}
+                       </p>
                       {user?.username !== blog.author_name && (
                         <button 
                             onClick={handleFollow}

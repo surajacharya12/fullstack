@@ -36,6 +36,7 @@ export default function Home() {
           <Route element={<PrivateRoute />}>
             <Route path="/blogs" element={<BlogPage />} />
             <Route path="/profile" element={<ProfilePage />} />
+            <Route path="/profile/:username" element={<ProfilePage />} />
           </Route>
 
           {/* Default redirect */}
