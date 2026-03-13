@@ -97,10 +97,11 @@ class BlogListCreateView(generics.ListCreateAPIView):
         serializer.save(author=self.request.user)
 
     def get_queryset(self):
+        queryset = Blog.objects.all().order_by('-created_at')
         topic = self.request.query_params.get('topic')
         if topic:
-            return self.queryset.filter(topic=topic)
-        return self.queryset
+            return queryset.filter(topic=topic)
+        return queryset
 
 class BlogDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Blog.objects.all()
