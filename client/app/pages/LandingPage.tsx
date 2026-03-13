@@ -151,7 +151,7 @@ export default function LandingPage() {
 
                 <footer className="pt-10 border-t border-stone-100">
                     <div className="flex flex-wrap gap-x-5 gap-y-3 text-[12px] font-bold text-stone-400">
-                        {["Help", "Status", "About", "Careers", "Privacy", "Terms", "Text to speech"].map(link => (
+                        {["Help", "Status", "About Stanza", "Careers", "Privacy", "Terms"].map(link => (
                             <span key={link} className="hover:text-stone-900 cursor-pointer transition-colors uppercase tracking-wider">{link}</span>
                         ))}
                     </div>
