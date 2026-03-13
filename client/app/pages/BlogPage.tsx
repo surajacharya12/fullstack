@@ -61,7 +61,7 @@ export default function BlogPage() {
     <div style={styles.page}>
       <header style={styles.navHeader}>
         <div style={styles.navLeft}>
-          <div style={styles.logo} onClick={() => navigate("/dashboard")}>S</div>
+          <div style={styles.logo} onClick={() => navigate("/blogs")}>S</div>
           <div style={styles.searchBar}>
             <span>🔍</span>
             <input type="text" placeholder="Search" style={styles.searchInput} />

@@ -6,7 +6,6 @@ import { AuthProvider } from "../context/AuthContext";
 import PrivateRoute from "../components/PrivateRoute";
 import LoginPage from "../pages/LoginPage";
 import SignupPage from "../pages/SignupPage";
-import DashboardPage from "../pages/DashboardPage";
 import BlogPage from "../pages/BlogPage";
 
 export default function Home() {
@@ -30,7 +29,6 @@ export default function Home() {
 
           {/* Protected — wrapped by PrivateRoute */}
           <Route element={<PrivateRoute />}>
-            <Route path="/dashboard" element={<DashboardPage />} />
             <Route path="/blogs" element={<BlogPage />} />
           </Route>
 

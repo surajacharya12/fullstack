@@ -4,7 +4,6 @@ import { AuthProvider } from "./context/AuthContext";
 import PrivateRoute from "./components/PrivateRoute";
 import LoginPage from "./pages/LoginPage";
 import SignupPage from "./pages/SignupPage";
-import DashboardPage from "./pages/DashboardPage";
 import BlogPage from "./pages/BlogPage";
 
 export default function App() {
@@ -17,7 +16,6 @@ export default function App() {
           <Route path="/signup" element={<SignupPage />} />
           {/* Protected — wrapped by PrivateRoute */}
           <Route element={<PrivateRoute />}>
-            <Route path="/dashboard" element={<DashboardPage />} />
             <Route path="/blogs" element={<BlogPage />} />
           </Route>
           {/* Default redirect */}
