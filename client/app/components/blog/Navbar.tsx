@@ -62,8 +62,14 @@ const Navbar = ({ username, onWriteClick, onLogout, onAvatarUpload }: NavbarProp
           </>
         ) : (
           <>
+            <button 
+              onClick={() => navigate("/login")} 
+              className="flex items-center gap-1 text-gray-500 hover:text-black transition-colors text-sm"
+            >
+              ✍️ Write
+            </button>
             <button onClick={() => navigate("/login")} className="text-gray-600 font-medium text-sm hover:text-black transition-colors">Sign in</button>
-            <button onClick={() => navigate("/signup")} className="bg-black text-white px-4 py-2 rounded-full text-sm font-medium hover:bg-gray-800 transition-colors shadow-sm">Get started</button>
+            <button onClick={() => navigate("/signup")} className="bg-black text-white px-5 py-2 rounded-full text-sm font-medium hover:bg-gray-800 transition-colors shadow-sm">Get started</button>
           </>
         )}
       </div>
