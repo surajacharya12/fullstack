@@ -67,7 +67,7 @@ class BlogSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Blog
-        fields = ['id', 'title', 'content', 'topic', 'image', 'author', 'author_name', 'author_id', 'author_avatar', 'likes_count', 'is_liked', 'comments', 'created_at', 'updated_at']
+        fields = ['id', 'title', 'content', 'topic', 'image', 'author', 'author_name', 'author_id', 'author_avatar', 'likes_count', 'is_liked', 'is_following', 'comments', 'created_at', 'updated_at']
         read_only_fields = ['author', 'created_at', 'updated_at']
 
     def get_likes_count(self, obj):
