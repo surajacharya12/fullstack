@@ -79,12 +79,23 @@ class ProfileView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
+        return Response(UserSerializer(request.user).data)
+
+    def put(self, request):
         user = request.user
-        return Response({
-            "username": user.username,
-            "email": user.email,
-            "message": "This is protected data retrieved using JWT"
-        }, status=status.HTTP_200_OK)
+        serializer = UserSerializer(user, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            
+            # Handle profile specific fields (bio, avatar)
+            profile_data = request.data.get('profile')
+            if profile_data:
+                profile_serializer = ProfileSerializer(user.profile, data=profile_data, partial=True)
+                if profile_serializer.is_valid():
+                    profile_serializer.save()
+            
+            return Response(UserSerializer(user).data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class BlogListCreateView(generics.ListCreateAPIView):
     queryset = Blog.objects.all().order_by('-created_at')
