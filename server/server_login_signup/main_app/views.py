@@ -7,6 +7,12 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from .serializers import UserSerializer
 from rest_framework.permissions import AllowAny
 
+from .models import Blog
+from .serializers import BlogSerializer
+from rest_framework import generics
+from .permissions import IsAuthorOrReadOnly
+
+
 class SignupView(APIView):
     permission_classes = [AllowAny]
 
@@ -82,4 +88,23 @@ class ProfileView(APIView):
             "email": user.email,
             "message": "This is protected data retrieved using JWT"
         }, status=status.HTTP_200_OK)
+
+class BlogListCreateView(generics.ListCreateAPIView):
+    queryset = Blog.objects.all().order_by('-created_at')
+    serializer_class = BlogSerializer
+    permission_classes = [IsAuthenticated] # Logged in users can see and create
+
+    def perform_create(self, serializer):
+        serializer.save(author=self.request.user)
+
+    def get_queryset(self):
+        topic = self.request.query_params.get('topic')
+        if topic:
+            return self.queryset.filter(topic=topic)
+        return self.queryset
+
+class BlogDetailView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Blog.objects.all()
+    serializer_class = BlogSerializer
+    permission_classes = [IsAuthenticated, IsAuthorOrReadOnly]
 

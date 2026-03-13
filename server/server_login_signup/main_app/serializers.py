@@ -1,12 +1,13 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
+from .models import Blog
 
 class UserSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
 
     class Meta:
         model = User
-        fields = ['username', 'email', 'password']
+        fields = ['id', 'username', 'email', 'password']
 
     def create(self, validated_data):
         user = User.objects.create_user(
@@ -15,3 +16,11 @@ class UserSerializer(serializers.ModelSerializer):
             password=validated_data['password']
         )
         return user
+
+class BlogSerializer(serializers.ModelSerializer):
+    author_name = serializers.ReadOnlyField(source='author.username')
+
+    class Meta:
+        model = Blog
+        fields = ['id', 'title', 'content', 'topic', 'author', 'author_name', 'created_at', 'updated_at']
+        read_only_fields = ['author', 'created_at', 'updated_at']
