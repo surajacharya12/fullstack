@@ -171,6 +171,10 @@ export default function ProfilePage() {
                         <p className="text-2xl font-black text-stone-900 tabular-nums">{profile.profile?.following_count || 0}</p>
                         <p className="text-[10px] font-black text-stone-400 uppercase tracking-[0.2em]">Following</p>
                     </div>
+                    <div>
+                        <p className="text-2xl font-black text-stone-900 tabular-nums">{profile.profile?.total_likes || 0}</p>
+                        <p className="text-[10px] font-black text-stone-400 uppercase tracking-[0.2em]">Support</p>
+                    </div>
                 </div>
             </div>
         </section>
