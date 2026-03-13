@@ -2,12 +2,12 @@
 
 import { useEffect, useState } from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import { AuthProvider } from "./context/AuthContext";
-import PrivateRoute from "./components/PrivateRoute";
-import LoginPage from "./pages/LoginPage";
-import SignupPage from "./pages/SignupPage";
-import DashboardPage from "./pages/DashboardPage";
-import BlogPage from "./pages/BlogPage";
+import { AuthProvider } from "../context/AuthContext";
+import PrivateRoute from "../components/PrivateRoute";
+import LoginPage from "../pages/LoginPage";
+import SignupPage from "../pages/SignupPage";
+import DashboardPage from "../pages/DashboardPage";
+import BlogPage from "../pages/BlogPage";
 
 export default function Home() {
   const [isMounted, setIsMounted] = useState(false);
