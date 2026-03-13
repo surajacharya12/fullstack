@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 import api from "../api/axiosInstance";
 
 export default function SignupPage() {
@@ -10,6 +11,7 @@ export default function SignupPage() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const { login } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -21,9 +23,10 @@ export default function SignupPage() {
     setError("");
     setLoading(true);
     try {
-      // Backend expects: username, email, password at /api/signup/
-      await api.post("/signup/", { username, email, password });
-      navigate("/login", { replace: true });
+      const { data } = await api.post("/signup/", { username, email, password });
+      // backend returns tokens on signup, so we can log in directly
+      login(data.tokens.access, data.tokens.refresh, data.user);
+      navigate("/blogs", { replace: true });
     } catch (err: any) {
       setError(err.response?.data?.error || err.response?.data?.detail || "Registration failed.");
     } finally {

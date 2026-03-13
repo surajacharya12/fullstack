@@ -21,7 +21,7 @@ export default function App() {
             <Route path="/blogs" element={<BlogPage />} />
           </Route>
           {/* Default redirect */}
-          <Route path="*" element={<Navigate to="/login" replace />} />
+          <Route path="*" element={<Navigate to="/blogs" replace />} />
         </Routes>
       </AuthProvider>
     </BrowserRouter>
