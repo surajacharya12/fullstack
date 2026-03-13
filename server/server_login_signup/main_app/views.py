@@ -6,6 +6,7 @@ from django.contrib.auth import authenticate
 from rest_framework_simplejwt.tokens import RefreshToken
 from .serializers import UserSerializer
 from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticated
 
 from .models import Blog
 from .serializers import BlogSerializer
@@ -75,8 +76,6 @@ class LoginView(APIView):
             }, status=status.HTTP_200_OK)
         else:
             return Response({"error": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)
-
-from rest_framework.permissions import AllowAny, IsAuthenticated
 
 class ProfileView(APIView):
     permission_classes = [IsAuthenticated]
