@@ -6,8 +6,12 @@ export const getBlogs = async (topic?: string) => {
   return response.data;
 };
 
-export const createBlog = async (blogData: { title: string; content: string; topic: string }) => {
-  const response = await axiosInstance.post("blogs/", blogData);
+export const createBlog = async (blogData: any) => {
+  const response = await axiosInstance.post("blogs/", blogData, {
+     headers: {
+       'Content-Type': blogData instanceof FormData ? 'multipart/form-data' : 'application/json'
+     }
+  });
   return response.data;
 };
 

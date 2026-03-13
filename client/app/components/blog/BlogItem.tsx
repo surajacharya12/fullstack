@@ -12,8 +12,12 @@ const BlogItem = ({ blog }: BlogItemProps) => {
     <div className="flex justify-between gap-8 py-8 border-b border-gray-100 transition-all hover:bg-gray-50/30 group">
       <div className="flex-1">
         <div className="flex items-center gap-2 mb-2 text-xs font-medium text-gray-800">
-          <div className="w-5 h-5 rounded-full bg-gray-200 flex items-center justify-center text-[10px] uppercase">
-            {blog.author_name[0]}
+          <div className="w-5 h-5 rounded-full bg-gray-200 flex items-center justify-center text-[10px] uppercase overflow-hidden">
+            {blog.author_avatar ? (
+              <img src={blog.author_avatar} alt={blog.author_name} className="w-full h-full object-cover" />
+            ) : (
+              blog.author_name[0]
+            )}
           </div>
           <span>{blog.author_name}</span>
         </div>
@@ -31,7 +35,13 @@ const BlogItem = ({ blog }: BlogItemProps) => {
           <span className="ml-auto opacity-0 group-hover:opacity-100 cursor-pointer transition-opacity">🔖</span>
         </div>
       </div>
-      <div className="hidden sm:block w-32 h-24 md:w-40 md:h-28 bg-gradient-to-br from-gray-50 to-gray-200 rounded-lg flex-shrink-0 shadow-sm border border-gray-100"></div>
+      <div className="hidden sm:block w-32 h-24 md:w-40 md:h-28 bg-linear-to-br from-gray-50 to-gray-200 rounded-lg shrink-0 shadow-sm border border-gray-100 overflow-hidden">
+        {blog.image ? (
+            <img src={blog.image} alt={blog.title} className="w-full h-full object-cover" />
+        ) : (
+            <div className="w-full h-full flex items-center justify-center text-gray-300 italic text-[10px]">No image</div>
+        )}
+      </div>
     </div>
   );
 };

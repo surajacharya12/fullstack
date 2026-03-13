@@ -7,16 +7,19 @@ interface NavbarProps {
   username?: string;
   onWriteClick: () => void;
   onLogout: () => void;
+  onAvatarUpload?: (file: File) => void;
 }
 
-const Navbar = ({ username, onWriteClick, onLogout }: NavbarProps) => {
+const Navbar = ({ username, onWriteClick, onLogout, onAvatarUpload }: NavbarProps) => {
   const navigate = useNavigate();
+  const avatarInputRef = React.useRef<HTMLInputElement>(null);
+
   return (
     <header className="flex justify-between items-center px-6 py-2 border-b border-gray-100 bg-white sticky top-0 z-50">
       <div className="flex items-center gap-4">
         <div 
           className="text-black font-extrabold text-2xl cursor-pointer tracking-tighter" 
-          onClick={() => navigate("/blogs")}
+          onClick={() => navigate("/")}
           style={{ fontFamily: "'Spectral', Georgia, serif" }}
         >
           Simple Story Hub
@@ -36,9 +39,22 @@ const Navbar = ({ username, onWriteClick, onLogout }: NavbarProps) => {
               ✍️ Write
             </button>
             <div className="flex items-center gap-4">
-               <div className="w-8 h-8 rounded-full bg-slate-200 flex items-center justify-center text-xs font-bold ring-1 ring-gray-100 uppercase">
-                 {username?.[0]}
+               <div 
+                 onClick={() => avatarInputRef.current?.click()}
+                 className="w-8 h-8 rounded-full bg-slate-200 flex items-center justify-center text-xs font-bold ring-1 ring-gray-100 uppercase cursor-pointer hover:ring-2 hover:ring-black transition-all"
+               >
+                 {username[0]}
                </div>
+               <input 
+                 type="file" 
+                 ref={avatarInputRef} 
+                 hidden 
+                 accept="image/*" 
+                 onChange={e => {
+                   const file = e.target.files?.[0];
+                   if (file && onAvatarUpload) onAvatarUpload(file);
+                 }}
+               />
                <button onClick={onLogout} className="text-red-500 hover:text-red-700 text-xs font-medium transition-colors">
                  Logout
                </button>

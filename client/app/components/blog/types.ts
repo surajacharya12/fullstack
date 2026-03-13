@@ -4,5 +4,7 @@ export interface Blog {
   content: string;
   topic: string;
   author_name: string;
+  author_avatar?: string;
+  image?: string;
   created_at: string;
 }

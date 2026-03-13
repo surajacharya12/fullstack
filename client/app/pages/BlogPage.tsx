@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { getBlogs, createBlog } from "../api/blogApi";
 import { useAuth } from "../context/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 // Components
 import Navbar from "../components/blog/Navbar";
@@ -18,10 +19,11 @@ export default function BlogPage() {
   const [blogs, setBlogs] = useState<Blog[]>([]);
   const [activeTab, setActiveTab] = useState("For you");
   const [showEditor, setShowEditor] = useState(false);
-  const [newBlog, setNewBlog] = useState({ title: "", content: "", topic: "Technology" });
+  const [newBlog, setNewBlog] = useState({ title: "", content: "", topic: "Technology", image: null as File | null });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const { user, logout } = useAuth();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const topic = (activeTab === "For you" || activeTab === "Following") ? undefined : activeTab;
@@ -44,8 +46,16 @@ export default function BlogPage() {
     e.preventDefault();
     if (!newBlog.title || !newBlog.content) return;
     try {
-      await createBlog(newBlog);
-      setNewBlog({ title: "", content: "", topic: "Technology" });
+      const formData = new FormData();
+      formData.append('title', newBlog.title);
+      formData.append('content', newBlog.content);
+      formData.append('topic', newBlog.topic);
+      if (newBlog.image) {
+        formData.append('image', newBlog.image);
+      }
+
+      await createBlog(formData);
+      setNewBlog({ title: "", content: "", topic: "Technology", image: null });
       setShowEditor(false);
       const topic = (activeTab === "For you" || activeTab === "Following") ? undefined : activeTab;
       fetchBlogs(topic);
@@ -83,7 +93,11 @@ export default function BlogPage() {
                 ))}
               </div>
             ) : (
-              blogs.map(blog => <BlogItem key={blog.id} blog={blog} />)
+              blogs.map(blog => (
+                <div key={blog.id} className="cursor-pointer" onClick={() => navigate(`/blogs/${blog.id}`)}>
+                  <BlogItem blog={blog} />
+                </div>
+              ))
             )}
             {!loading && blogs.length === 0 && (
               <div className="text-center py-20 bg-gray-50 rounded-2xl border border-dashed border-gray-200">
