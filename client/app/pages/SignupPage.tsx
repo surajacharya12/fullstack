@@ -4,22 +4,8 @@ import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import api from "../api/axiosInstance";
+import AuthInput from "../components/auth/AuthInput";
 
-// Sub-component: Form Input
-const AuthInput = ({ label, type, value, onChange, placeholder }: any) => (
-  <div className="mb-4">
-    <label className="block mb-1.5 text-sm font-semibold text-gray-700">{label}</label>
-    <input
-      type={type}
-      value={value}
-      onChange={onChange}
-      placeholder={placeholder}
-      className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none transition-all bg-white text-gray-900 placeholder:text-gray-400 shadow-sm"
-    />
-  </div>
-);
-
-// Main Page Component
 export default function SignupPage() {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
@@ -72,6 +58,7 @@ export default function SignupPage() {
             value={username}
             onChange={(e: any) => setUsername(e.target.value)}
             placeholder="Choose a unique username"
+            className="focus:ring-emerald-500"
           />
           <AuthInput
             label="Email Address"
@@ -79,6 +66,7 @@ export default function SignupPage() {
             value={email}
             onChange={(e: any) => setEmail(e.target.value)}
             placeholder="you@example.com"
+            className="focus:ring-emerald-500"
           />
           <AuthInput
             label="Password"
@@ -86,6 +74,7 @@ export default function SignupPage() {
             value={password}
             onChange={(e: any) => setPassword(e.target.value)}
             placeholder="Create a strong password"
+            className="focus:ring-emerald-500"
           />
 
           <button
