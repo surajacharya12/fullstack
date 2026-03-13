@@ -33,3 +33,18 @@ export const updateProfile = async (profileData: any) => {
   });
   return response.data;
 };
+
+export const toggleLike = async (id: number) => {
+  const response = await axiosInstance.post(`blogs/${id}/like/`);
+  return response.data;
+};
+
+export const addComment = async (blogId: number, text: string) => {
+  const response = await axiosInstance.post("comments/", { blog: blogId, text });
+  return response.data;
+};
+
+export const toggleFollow = async (username: string) => {
+  const response = await axiosInstance.post(`follow/${username}/`);
+  return response.data;
+};

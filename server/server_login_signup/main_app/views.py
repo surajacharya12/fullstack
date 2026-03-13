@@ -131,3 +131,46 @@ class BlogDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Blog.objects.all()
     serializer_class = BlogSerializer
     permission_classes = [IsAuthenticatedOrReadOnly, IsAuthorOrReadOnly]
+
+class LikeBlogView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, pk):
+        try:
+            blog = Blog.objects.get(pk=pk)
+            if blog.likes.filter(id=request.user.id).exists():
+                blog.likes.remove(request.user)
+                return Response({"message": "Unliked", "is_liked": False}, status=status.HTTP_200_OK)
+            else:
+                blog.likes.add(request.user)
+                return Response({"message": "Liked", "is_liked": True}, status=status.HTTP_200_OK)
+        except Blog.DoesNotExist:
+            return Response({"error": "Blog not found"}, status=status.HTTP_404_NOT_FOUND)
+
+class CommentCreateView(generics.CreateAPIView):
+    serializer_class = CommentSerializer
+    permission_classes = [IsAuthenticated]
+
+    def perform_create(self, serializer):
+        blog_id = self.request.data.get('blog')
+        blog = Blog.objects.get(id=blog_id)
+        serializer.save(author=self.request.user, blog=blog)
+
+class FollowUserView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, username):
+        try:
+            user_to_follow = User.objects.get(username=username)
+            if user_to_follow == request.user:
+                return Response({"error": "You cannot follow yourself"}, status=status.HTTP_400_BAD_REQUEST)
+            
+            follow_obj, created = Follow.objects.get_or_create(follower=request.user, followed=user_to_follow)
+            
+            if not created:
+                follow_obj.delete()
+                return Response({"message": "Unfollowed", "is_following": False}, status=status.HTTP_200_OK)
+            
+            return Response({"message": "Following", "is_following": True}, status=status.HTTP_201_CREATED)
+        except User.DoesNotExist:
+            return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
