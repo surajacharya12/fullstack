@@ -27,20 +27,29 @@ const Navbar = ({ username, onWriteClick, onLogout }: NavbarProps) => {
         </div>
       </div>
       <div className="flex items-center gap-6">
-        <button 
-          className="flex items-center gap-1 text-gray-500 hover:text-black transition-colors text-sm" 
-          onClick={onWriteClick}
-        >
-          ✍️ Write
-        </button>
-        <div className="flex items-center gap-4">
-           <div className="w-8 h-8 rounded-full bg-slate-200 flex items-center justify-center text-xs font-bold ring-1 ring-gray-100 uppercase">
-             {username?.[0] || 'U'}
-           </div>
-           <button onClick={onLogout} className="text-red-500 hover:text-red-700 text-xs font-medium transition-colors">
-             Logout
-           </button>
-        </div>
+        {username ? (
+          <>
+            <button 
+              className="flex items-center gap-1 text-gray-500 hover:text-black transition-colors text-sm" 
+              onClick={onWriteClick}
+            >
+              ✍️ Write
+            </button>
+            <div className="flex items-center gap-4">
+               <div className="w-8 h-8 rounded-full bg-slate-200 flex items-center justify-center text-xs font-bold ring-1 ring-gray-100 uppercase">
+                 {username?.[0]}
+               </div>
+               <button onClick={onLogout} className="text-red-500 hover:text-red-700 text-xs font-medium transition-colors">
+                 Logout
+               </button>
+            </div>
+          </>
+        ) : (
+          <>
+            <button onClick={() => navigate("/login")} className="text-gray-600 font-medium text-sm hover:text-black transition-colors">Sign in</button>
+            <button onClick={() => navigate("/signup")} className="bg-black text-white px-4 py-2 rounded-full text-sm font-medium hover:bg-gray-800 transition-colors shadow-sm">Get started</button>
+          </>
+        )}
       </div>
     </header>
   );
