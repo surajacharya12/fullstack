@@ -25,7 +25,7 @@ export default function LoginPage() {
       const { data } = await api.post("/login/", { username, password });
 
       login(data.tokens.access, data.tokens.refresh, data.user);
-      navigate("/dashboard", { replace: true });
+      navigate("/blogs", { replace: true });
     } catch (err: any) {
       setError(
         err.response?.data?.error ||
