@@ -4,10 +4,9 @@ from rest_framework import status
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
 from rest_framework_simplejwt.tokens import RefreshToken
-from .serializers import UserSerializer
+from .serializers import UserSerializer, BlogSerializer, CommentSerializer
 from rest_framework.permissions import AllowAny, IsAuthenticated, IsAuthenticatedOrReadOnly
-from .models import Blog
-from .serializers import BlogSerializer
+from .models import Blog, Follow
 from rest_framework import generics
 from .permissions import IsAuthorOrReadOnly
 

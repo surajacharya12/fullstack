@@ -15,15 +15,22 @@ class ProfileSerializer(serializers.ModelSerializer):
     follower_count = serializers.SerializerMethodField()
     following_count = serializers.SerializerMethodField()
 
+    total_likes = serializers.SerializerMethodField()
+
     class Meta:
         model = Profile
-        fields = ['avatar', 'bio', 'follower_count', 'following_count']
+        fields = ['avatar', 'bio', 'follower_count', 'following_count', 'total_likes']
 
     def get_follower_count(self, obj):
         return obj.user.followers.count()
 
     def get_following_count(self, obj):
         return obj.user.following.count()
+
+    def get_total_likes(self, obj):
+        from .models import Blog
+        blogs = Blog.objects.filter(author=obj.user)
+        return sum(blog.likes.count() for blog in blogs)
 
 class UserSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
@@ -55,6 +62,7 @@ class BlogSerializer(serializers.ModelSerializer):
     author_id = serializers.ReadOnlyField(source='author.id')
     likes_count = serializers.SerializerMethodField()
     is_liked = serializers.SerializerMethodField()
+    is_following = serializers.SerializerMethodField()
     comments = CommentSerializer(many=True, read_only=True)
 
     class Meta:
@@ -69,4 +77,11 @@ class BlogSerializer(serializers.ModelSerializer):
         request = self.context.get('request')
         if request and request.user.is_authenticated:
             return obj.likes.filter(id=request.user.id).exists()
+        return False
+
+    def get_is_following(self, obj):
+        request = self.context.get('request')
+        if request and request.user.is_authenticated:
+            from .models import Follow
+            return Follow.objects.filter(follower=request.user, followed=obj.author).exists()
         return False
