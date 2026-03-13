@@ -52,7 +52,7 @@ export default function LandingPage() {
               Discover stories, thinking, and expertise from writers on any topic. A human perspective on the world.
             </p>
             <button 
-              onClick={() => navigate("/signup")}
+              onClick={() => navigate(user ? "/blogs" : "/signup")}
               className="bg-stone-900 text-white px-12 py-4 rounded-full text-xl font-bold hover:bg-stone-800 transition-all mt-8 shadow-xl active:scale-95 hover:-translate-y-1"
             >
               Start reading
