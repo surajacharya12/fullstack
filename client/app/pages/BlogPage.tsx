@@ -61,7 +61,7 @@ export default function BlogPage() {
     <div style={styles.page}>
       <header style={styles.navHeader}>
         <div style={styles.navLeft}>
-          <div style={styles.logo} onClick={() => navigate("/blogs")}>S</div>
+          <div style={styles.logoText} onClick={() => navigate("/blogs")}>Simple Story Hub</div>
           <div style={styles.searchBar}>
             <span>🔍</span>
             <input type="text" placeholder="Search" style={styles.searchInput} />
@@ -78,9 +78,9 @@ export default function BlogPage() {
 
       <div style={styles.tabNav}>
         {TOPICS.map(topic => (
-          <button 
-            key={topic} 
-            style={{...styles.tabBtn, ...(activeTab === topic ? styles.activeTab : {})}}
+          <button
+            key={topic}
+            style={{ ...styles.tabBtn, ...(activeTab === topic ? styles.activeTab : {}) }}
             onClick={() => setActiveTab(topic)}
           >
             {topic}
@@ -91,31 +91,31 @@ export default function BlogPage() {
       <main style={styles.mainLayout}>
         <div style={styles.contentCol}>
           {showEditor && (
-             <div style={styles.editorCard}>
-                <input 
-                  style={styles.editorTitle} 
-                  placeholder="Title" 
-                  value={newBlog.title}
-                  onChange={e => setNewBlog({...newBlog, title: e.target.value})}
-                />
-                <select 
-                  style={styles.topicSelect}
-                  value={newBlog.topic}
-                  onChange={e => setNewBlog({...newBlog, topic: e.target.value})}
-                >
-                  {TOPICS.filter(t => t !== "For you" && t !== "Following").map(t => <option key={t} value={t}>{t}</option>)}
-                </select>
-                <textarea 
-                  style={styles.editorBody} 
-                  placeholder="Tell your story..." 
-                  value={newBlog.content}
-                  onChange={e => setNewBlog({...newBlog, content: e.target.value})}
-                />
-                <div style={styles.editorActions}>
-                   <button onClick={handleSubmit} style={styles.publishBtn}>Publish</button>
-                   <button onClick={() => setShowEditor(false)} style={styles.cancelBtn}>Cancel</button>
-                </div>
-             </div>
+            <div style={styles.editorCard}>
+              <input
+                style={styles.editorTitle}
+                placeholder="Title"
+                value={newBlog.title}
+                onChange={e => setNewBlog({ ...newBlog, title: e.target.value })}
+              />
+              <select
+                style={styles.topicSelect}
+                value={newBlog.topic}
+                onChange={e => setNewBlog({ ...newBlog, topic: e.target.value })}
+              >
+                {TOPICS.filter(t => t !== "For you" && t !== "Following").map(t => <option key={t} value={t}>{t}</option>)}
+              </select>
+              <textarea
+                style={styles.editorBody}
+                placeholder="Tell your story..."
+                value={newBlog.content}
+                onChange={e => setNewBlog({ ...newBlog, content: e.target.value })}
+              />
+              <div style={styles.editorActions}>
+                <button onClick={handleSubmit} style={styles.publishBtn}>Publish</button>
+                <button onClick={() => setShowEditor(false)} style={styles.cancelBtn}>Cancel</button>
+              </div>
+            </div>
           )}
 
           {loading ? <p>Loading...</p> : (
@@ -149,11 +149,11 @@ export default function BlogPage() {
           <div style={styles.sidebarSection}>
             <h3 style={styles.sidebarTitle}>Staff Picks</h3>
             <div style={styles.staffPick}>
-               <div style={styles.miniAuthor}>
-                  <div style={styles.microAvatar}>J</div>
-                  <span>Jordan Moore</span>
-               </div>
-               <p style={styles.pickTitle}>The evolution of AI in 2024</p>
+              <div style={styles.miniAuthor}>
+                <div style={styles.microAvatar}>J</div>
+                <span>Jordan Moore</span>
+              </div>
+              <p style={styles.pickTitle}>The evolution of AI in 2024</p>
             </div>
           </div>
 
@@ -165,7 +165,7 @@ export default function BlogPage() {
               ))}
             </div>
           </div>
-          
+
           <footer style={styles.miniFooter}>
             <span style={styles.footerLink}>Help</span>
             <span style={styles.footerLink}>Status</span>
@@ -185,7 +185,7 @@ const styles: Record<string, React.CSSProperties> = {
   page: { background: "white", minHeight: "100vh", fontFamily: "Spectral, Georgia, serif" },
   navHeader: { display: "flex", justifyContent: "space-between", alignItems: "center", padding: "0.5rem 1.5rem", borderBottom: "1px solid #f2f2f2" },
   navLeft: { display: "flex", alignItems: "center", gap: "1rem" },
-  logo: { width: 40, height: 40, background: "black", color: "white", borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: "bold", cursor: "pointer", fontSize: 24, paddingBottom: 4 },
+  logoText: { color: "black", fontWeight: "800", fontSize: "1.5rem", cursor: "pointer", letterSpacing: "-0.5px", fontFamily: "Spectral, Georgia, serif" },
   searchBar: { display: "flex", alignItems: "center", background: "#f9f9f9", padding: "0.5rem 1rem", borderRadius: "100px", gap: "0.5rem" },
   searchInput: { border: "none", background: "none", outline: "none", fontSize: "0.9rem" },
   navRight: { display: "flex", alignItems: "center", gap: "1.5rem" },
@@ -199,7 +199,7 @@ const styles: Record<string, React.CSSProperties> = {
 
   mainLayout: { display: "grid", gridTemplateColumns: "1fr 350px", gap: "4rem", padding: "2rem 12%", maxWidth: 1400, margin: "0 auto" },
   contentCol: { display: "flex", flexDirection: "column" },
-  
+
   editorCard: { display: "flex", flexDirection: "column", gap: "1rem", marginBottom: "2rem", borderBottom: "1px solid #f2f2f2", paddingBottom: "2rem" },
   editorTitle: { fontSize: "2.5rem", border: "none", outline: "none", fontWeight: "bold", fontFamily: "inherit" },
   topicSelect: { width: "fit-content", padding: "0.4rem", borderRadius: "4px", border: "1px solid #ddd" },
@@ -218,7 +218,7 @@ const styles: Record<string, React.CSSProperties> = {
   dot: { fontSize: 12 },
   topicBadge: { background: "#f2f2f2", padding: "2px 8px", borderRadius: "100px", color: "#292929" },
   icon: { marginLeft: "auto", cursor: "pointer" },
-  
+
   blogImg: { width: 160, height: 110, flexShrink: 0 },
   mockImg: { width: "100%", height: "100%", background: "linear-gradient(45deg, #f3f4f6, #e5e7eb)", borderRadius: "4px" },
 
@@ -232,7 +232,7 @@ const styles: Record<string, React.CSSProperties> = {
 
   topicCloud: { display: "flex", flexWrap: "wrap", gap: "0.5rem" },
   cloudTag: { background: "#f2f2f2", border: "none", padding: "0.5rem 1rem", borderRadius: "100px", fontSize: "0.85rem", cursor: "pointer" },
-  
+
   miniFooter: { display: "flex", flexWrap: "wrap", gap: "0.8rem", marginTop: "2rem", borderTop: "1px solid #f2f2f2", paddingTop: "1rem" },
   footerLink: { fontSize: "0.8rem", color: "#757575", cursor: "pointer" }
 };
