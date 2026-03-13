@@ -14,27 +14,29 @@ interface Blog {
   created_at: string;
 }
 
+const TOPICS = ["For you", "Following", "Design", "Technology", "Writing", "Programming", "Data Science", "Politics"];
+
 export default function BlogPage() {
   const [blogs, setBlogs] = useState<Blog[]>([]);
-  const [newBlog, setNewBlog] = useState({ title: "", content: "", topic: "" });
+  const [activeTab, setActiveTab] = useState("For you");
+  const [showEditor, setShowEditor] = useState(false);
+  const [newBlog, setNewBlog] = useState({ title: "", content: "", topic: "Technology" });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const { user, logout } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetchBlogs();
-  }, []);
+    fetchBlogs(activeTab === "For you" ? undefined : activeTab);
+  }, [activeTab]);
 
   const fetchBlogs = async (topic?: string) => {
     try {
       setLoading(true);
       const data = await getBlogs(topic);
       setBlogs(data);
-      setError("");
     } catch (err: any) {
       setError("Failed to fetch blogs");
-      console.error(err);
     } finally {
       setLoading(false);
     }
@@ -42,131 +44,192 @@ export default function BlogPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!newBlog.title || !newBlog.content || !newBlog.topic) {
-      setError("Please fill all fields");
-      return;
-    }
     try {
       await createBlog(newBlog);
-      setNewBlog({ title: "", content: "", topic: "" });
+      setNewBlog({ title: "", content: "", topic: "Technology" });
+      setShowEditor(false);
       fetchBlogs();
-    } catch (err: any) {
+    } catch (err) {
       setError("Failed to create blog");
     }
   };
 
-  const handleDelete = async (id: number) => {
-    try {
-      await deleteBlog(id);
-      fetchBlogs();
-    } catch (err: any) {
-      setError("Failed to delete blog. Are you the author?");
-    }
-  };
-
   return (
-    <div style={styles.container}>
-      <header style={styles.header}>
-        <h1 style={{ ...styles.title, cursor: 'pointer' }} onClick={() => navigate("/dashboard")}>
-          Blog System
-        </h1>
-        <div style={styles.navActions}>
-           <span style={styles.userInfo}>Hi, {user?.username}</span>
-           <button onClick={() => navigate("/dashboard")} style={styles.dashBtn}>Dashboard</button>
-           <button onClick={logout} style={styles.logoutBtn}>Logout</button>
+    <div style={styles.page}>
+      <header style={styles.navHeader}>
+        <div style={styles.navLeft}>
+          <div style={styles.logo} onClick={() => navigate("/dashboard")}>S</div>
+          <div style={styles.searchBar}>
+            <span>🔍</span>
+            <input type="text" placeholder="Search" style={styles.searchInput} />
+          </div>
+        </div>
+        <div style={styles.navRight}>
+          <button style={styles.writeLink} onClick={() => setShowEditor(!showEditor)}>
+            ✍️ Write
+          </button>
+          <div style={styles.avatar}>{user?.username?.[0].toUpperCase()}</div>
+          <button onClick={logout} style={styles.logoutSm}>Logout</button>
         </div>
       </header>
 
-      <main style={styles.main}>
-        <section style={styles.formSection}>
-          <h2 style={styles.sectionTitle}>Write a New Blog</h2>
-          <form onSubmit={handleSubmit} style={styles.form}>
-            <input
-              type="text"
-              placeholder="Blog Title"
-              value={newBlog.title}
-              onChange={(e) => setNewBlog({ ...newBlog, title: e.target.value })}
-              style={styles.input}
-            />
-            <input
-              type="text"
-              placeholder="Topic (e.g. Technology, Health, Travel)"
-              value={newBlog.topic}
-              onChange={(e) => setNewBlog({ ...newBlog, topic: e.target.value })}
-              style={styles.input}
-            />
-            <textarea
-              placeholder="What's on your mind?"
-              value={newBlog.content}
-              onChange={(e) => setNewBlog({ ...newBlog, content: e.target.value })}
-              style={styles.textarea}
-            />
-            <button type="submit" style={styles.submitBtn}>Post Blog</button>
-          </form>
-          {error && <p style={styles.error}>{error}</p>}
-        </section>
+      <div style={styles.tabNav}>
+        {TOPICS.map(topic => (
+          <button 
+            key={topic} 
+            style={{...styles.tabBtn, ...(activeTab === topic ? styles.activeTab : {})}}
+            onClick={() => setActiveTab(topic)}
+          >
+            {topic}
+          </button>
+        ))}
+      </div>
 
-        <section style={styles.listSection}>
-          <div style={styles.listHeader}>
-            <h2 style={styles.sectionTitle}>Recent Blogs</h2>
-            <div style={styles.filterGroup}>
-               <button onClick={() => fetchBlogs()} style={styles.filterBtn}>All</button>
-               <button onClick={() => fetchBlogs('Technology')} style={styles.filterBtn}>Tech</button>
-               <button onClick={() => fetchBlogs('Health')} style={styles.filterBtn}>Health</button>
+      <main style={styles.mainLayout}>
+        <div style={styles.contentCol}>
+          {showEditor && (
+             <div style={styles.editorCard}>
+                <input 
+                  style={styles.editorTitle} 
+                  placeholder="Title" 
+                  value={newBlog.title}
+                  onChange={e => setNewBlog({...newBlog, title: e.target.value})}
+                />
+                <select 
+                  style={styles.topicSelect}
+                  value={newBlog.topic}
+                  onChange={e => setNewBlog({...newBlog, topic: e.target.value})}
+                >
+                  {TOPICS.filter(t => t !== "For you" && t !== "Following").map(t => <option key={t} value={t}>{t}</option>)}
+                </select>
+                <textarea 
+                  style={styles.editorBody} 
+                  placeholder="Tell your story..." 
+                  value={newBlog.content}
+                  onChange={e => setNewBlog({...newBlog, content: e.target.value})}
+                />
+                <div style={styles.editorActions}>
+                   <button onClick={handleSubmit} style={styles.publishBtn}>Publish</button>
+                   <button onClick={() => setShowEditor(false)} style={styles.cancelBtn}>Cancel</button>
+                </div>
+             </div>
+          )}
+
+          {loading ? <p>Loading...</p> : (
+            blogs.map(blog => (
+              <div key={blog.id} style={styles.blogItem}>
+                <div style={styles.blogText}>
+                  <div style={styles.itemAuthor}>
+                    <div style={styles.miniAvatar}>{blog.author_name[0].toUpperCase()}</div>
+                    <span>{blog.author_name}</span>
+                  </div>
+                  <h2 style={styles.itemTitle}>{blog.title}</h2>
+                  <p style={styles.itemSnippet}>{blog.content.substring(0, 150)}...</p>
+                  <div style={styles.itemMeta}>
+                    <span>{new Date(blog.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</span>
+                    <span style={styles.dot}>·</span>
+                    <span>{Math.ceil(blog.content.length / 500)} min read</span>
+                    <span style={styles.topicBadge}>{blog.topic}</span>
+                    <span style={styles.icon}>🔖</span>
+                  </div>
+                </div>
+                <div style={styles.blogImg}>
+                  {/* Mock image generator placeholder */}
+                  <div style={styles.mockImg}></div>
+                </div>
+              </div>
+            ))
+          )}
+        </div>
+
+        <aside style={styles.sidebar}>
+          <div style={styles.sidebarSection}>
+            <h3 style={styles.sidebarTitle}>Staff Picks</h3>
+            <div style={styles.staffPick}>
+               <div style={styles.miniAuthor}>
+                  <div style={styles.microAvatar}>J</div>
+                  <span>Jordan Moore</span>
+               </div>
+               <p style={styles.pickTitle}>The evolution of AI in 2024</p>
             </div>
           </div>
 
-          {loading ? (
-            <p>Loading blogs...</p>
-          ) : (
-            <div style={styles.blogGrid}>
-              {blogs.map((blog) => (
-                <div key={blog.id} style={styles.blogCard}>
-                  <div style={styles.blogTag}>{blog.topic}</div>
-                  <h3 style={styles.blogTitle}>{blog.title}</h3>
-                  <p style={styles.blogContent}>{blog.content}</p>
-                  <div style={styles.blogFooter}>
-                    <span>By {blog.author_name}</span>
-                    <span>{new Date(blog.created_at).toLocaleDateString()}</span>
-                  </div>
-                  {user?.username === blog.author_name && (
-                    <button onClick={() => handleDelete(blog.id)} style={styles.deleteBtn}>Delete</button>
-                  )}
-                </div>
+          <div style={styles.sidebarSection}>
+            <h3 style={styles.sidebarTitle}>Recommended topics</h3>
+            <div style={styles.topicCloud}>
+              {TOPICS.slice(1).map(topic => (
+                <button key={topic} style={styles.cloudTag} onClick={() => setActiveTab(topic)}>{topic}</button>
               ))}
             </div>
-          )}
-        </section>
+          </div>
+          
+          <footer style={styles.miniFooter}>
+            <span style={styles.footerLink}>Help</span>
+            <span style={styles.footerLink}>Status</span>
+            <span style={styles.footerLink}>About</span>
+            <span style={styles.footerLink}>Careers</span>
+            <span style={styles.footerLink}>Blog</span>
+            <span style={styles.footerLink}>Privacy</span>
+            <span style={styles.footerLink}>Terms</span>
+          </footer>
+        </aside>
       </main>
     </div>
   );
 }
 
 const styles: Record<string, React.CSSProperties> = {
-  container: { minHeight: "100vh", background: "#f8fafc", color: "#1e293b", fontFamily: "system-ui, sans-serif" },
-  header: { display: "flex", justifyContent: "space-between", alignItems: "center", padding: "1rem 5%", background: "#ffffff", boxShadow: "0 1px 3px rgba(0,0,0,0.1)" },
-  title: { fontSize: "1.5rem", fontWeight: "800", color: "#2563eb" },
-  navActions: { display: "flex", alignItems: "center", gap: "1rem" },
-  userInfo: { fontWeight: "500", color: "#64748b" },
-  dashBtn: { padding: "0.5rem 1rem", border: "1px solid #e2e8f0", borderRadius: "6px", background: "none", cursor: "pointer" },
-  logoutBtn: { padding: "0.5rem 1rem", background: "#ef4444", color: "white", border: "none", borderRadius: "6px", cursor: "pointer", fontWeight: "600" },
-  main: { padding: "2rem 5%", maxWidth: "1200px", margin: "0 auto" },
-  formSection: { background: "white", padding: "2rem", borderRadius: "12px", boxShadow: "0 4px 6px -1px rgba(0,0,0,0.1)", marginBottom: "3rem" },
-  sectionTitle: { fontSize: "1.25rem", fontWeight: "700", marginBottom: "1.5rem" },
-  form: { display: "flex", flexDirection: "column", gap: "1rem" },
-  input: { padding: "0.75rem", borderRadius: "8px", border: "1px solid #e2e8f0", fontSize: "1rem" },
-  textarea: { padding: "0.75rem", borderRadius: "8px", border: "1px solid #e2e8f0", fontSize: "1rem", minHeight: "150px", resize: "vertical" },
-  submitBtn: { padding: "0.75rem", background: "#2563eb", color: "white", border: "none", borderRadius: "8px", cursor: "pointer", fontWeight: "600", fontSize: "1rem" },
-  error: { color: "#ef4444", marginTop: "1rem", fontWeight: "500" },
-  listSection: { display: "flex", flexDirection: "column", gap: "1.5rem" },
-  listHeader: { display: "flex", justifyContent: "space-between", alignItems: "center" },
-  filterGroup: { display: "flex", gap: "0.5rem" },
-  filterBtn: { padding: "0.4rem 0.8rem", borderRadius: "20px", border: "1px solid #d1d5db", background: "white", cursor: "pointer", fontSize: "0.875rem" },
-  blogGrid: { display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))", gap: "1.5rem" },
-  blogCard: { background: "white", padding: "1.5rem", borderRadius: "12px", border: "1px solid #e2e8f0", position: "relative", display: "flex", flexDirection: "column" },
-  blogTag: { background: "#dbeafe", color: "#2563eb", padding: "0.25rem 0.75rem", borderRadius: "100px", fontSize: "0.75rem", fontWeight: "700", width: "fit-content", marginBottom: "1rem" },
-  blogTitle: { fontSize: "1.125rem", fontWeight: "700", marginBottom: "0.75rem" },
-  blogContent: { color: "#475569", fontSize: "0.95rem", lineHeight: "1.5", marginBottom: "1.5rem", flexGrow: 1 },
-  blogFooter: { display: "flex", justifyContent: "space-between", fontSize: "0.8rem", color: "#94a3b8" },
-  deleteBtn: { marginTop: "1rem", color: "#ef4444", background: "none", border: "none", cursor: "pointer", fontWeight: "600", fontSize: "0.875rem", width: "fit-content" }
+  page: { background: "white", minHeight: "100vh", fontFamily: "Spectral, Georgia, serif" },
+  navHeader: { display: "flex", justifyContent: "space-between", alignItems: "center", padding: "0.5rem 1.5rem", borderBottom: "1px solid #f2f2f2" },
+  navLeft: { display: "flex", alignItems: "center", gap: "1rem" },
+  logo: { width: 40, height: 40, background: "black", color: "white", borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: "bold", cursor: "pointer", fontSize: 24, paddingBottom: 4 },
+  searchBar: { display: "flex", alignItems: "center", background: "#f9f9f9", padding: "0.5rem 1rem", borderRadius: "100px", gap: "0.5rem" },
+  searchInput: { border: "none", background: "none", outline: "none", fontSize: "0.9rem" },
+  navRight: { display: "flex", alignItems: "center", gap: "1.5rem" },
+  writeLink: { background: "none", border: "none", cursor: "pointer", color: "#757575", fontSize: "0.95rem", display: "flex", alignItems: "center", gap: 4 },
+  avatar: { width: 32, height: 32, borderRadius: "50%", background: "#e2e8f0", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 14, fontWeight: "bold" },
+  logoutSm: { border: "none", background: "none", color: "#ef4444", cursor: "pointer", fontSize: "0.85rem" },
+
+  tabNav: { display: "flex", gap: "1.5rem", padding: "1rem 12%", borderBottom: "1px solid #f2f2f2", overflowX: "auto" },
+  tabBtn: { background: "none", border: "none", color: "#757575", cursor: "pointer", padding: "0.5rem 0", fontSize: "0.9rem" },
+  activeTab: { color: "black", borderBottom: "1px solid black" },
+
+  mainLayout: { display: "grid", gridTemplateColumns: "1fr 350px", gap: "4rem", padding: "2rem 12%", maxWidth: 1400, margin: "0 auto" },
+  contentCol: { display: "flex", flexDirection: "column" },
+  
+  editorCard: { display: "flex", flexDirection: "column", gap: "1rem", marginBottom: "2rem", borderBottom: "1px solid #f2f2f2", paddingBottom: "2rem" },
+  editorTitle: { fontSize: "2.5rem", border: "none", outline: "none", fontWeight: "bold", fontFamily: "inherit" },
+  topicSelect: { width: "fit-content", padding: "0.4rem", borderRadius: "4px", border: "1px solid #ddd" },
+  editorBody: { fontSize: "1.2rem", border: "none", outline: "none", minHeight: "200px", resize: "none", fontFamily: "inherit" },
+  editorActions: { display: "flex", gap: "1rem" },
+  publishBtn: { background: "#1a8917", color: "white", border: "none", padding: "0.5rem 1rem", borderRadius: "100px", cursor: "pointer", fontSize: "0.9rem" },
+  cancelBtn: { background: "none", border: "1px solid #ddd", padding: "0.5rem 1rem", borderRadius: "100px", cursor: "pointer", fontSize: "0.9rem" },
+
+  blogItem: { display: "flex", justifyContent: "space-between", gap: "2rem", padding: "1.5rem 0", borderBottom: "1px solid #f2f2f2", alignItems: "center" },
+  blogText: { flex: 1 },
+  itemAuthor: { display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: "0.5rem", fontSize: "0.85rem", fontWeight: 500 },
+  miniAvatar: { width: 20, height: 20, borderRadius: "50%", background: "#ddd", fontSize: 10, display: "flex", alignItems: "center", justifyContent: "center" },
+  itemTitle: { fontSize: "1.4rem", fontWeight: "bold", marginBottom: "0.4rem", color: "#292929" },
+  itemSnippet: { color: "#757575", fontSize: "1rem", lineHeight: "1.4", marginBottom: "1rem" },
+  itemMeta: { display: "flex", alignItems: "center", gap: "0.5rem", color: "#757575", fontSize: "0.8rem" },
+  dot: { fontSize: 12 },
+  topicBadge: { background: "#f2f2f2", padding: "2px 8px", borderRadius: "100px", color: "#292929" },
+  icon: { marginLeft: "auto", cursor: "pointer" },
+  
+  blogImg: { width: 160, height: 110, flexShrink: 0 },
+  mockImg: { width: "100%", height: "100%", background: "linear-gradient(45deg, #f3f4f6, #e5e7eb)", borderRadius: "4px" },
+
+  sidebar: { position: "sticky", top: "2rem", height: "fit-content" },
+  sidebarSection: { marginBottom: "2.5rem" },
+  sidebarTitle: { fontSize: "1rem", fontWeight: "bold", marginBottom: "1rem" },
+  staffPick: { marginBottom: "1rem" },
+  miniAuthor: { display: "flex", alignItems: "center", gap: "0.4rem", fontSize: "0.75rem", marginBottom: "0.25rem" },
+  microAvatar: { width: 14, height: 14, borderRadius: "50%", background: "#ddd", fontSize: 8, display: "flex", alignItems: "center", justifyContent: "center" },
+  pickTitle: { fontSize: "0.9rem", fontWeight: "bold", color: "#292929" },
+
+  topicCloud: { display: "flex", flexWrap: "wrap", gap: "0.5rem" },
+  cloudTag: { background: "#f2f2f2", border: "none", padding: "0.5rem 1rem", borderRadius: "100px", fontSize: "0.85rem", cursor: "pointer" },
+  
+  miniFooter: { display: "flex", flexWrap: "wrap", gap: "0.8rem", marginTop: "2rem", borderTop: "1px solid #f2f2f2", paddingTop: "1rem" },
+  footerLink: { fontSize: "0.8rem", color: "#757575", cursor: "pointer" }
 };
