@@ -88,9 +88,24 @@ class ProfileView(APIView):
             serializer.save()
             
             # Handle profile specific fields (bio, avatar)
+            # Support both nested {"profile": {"bio": ...}} and flat multipart {"bio": ...}
             profile_data = request.data.get('profile')
+            bio = request.data.get('bio')
+            avatar = request.data.get('avatar')
+            
+            p_data = {}
             if profile_data:
-                profile_serializer = ProfileSerializer(user.profile, data=profile_data, partial=True)
+                # If it's a string (e.g. from some clients), might need parsing, 
+                # but DRF usually handles it if it's JSON.
+                if isinstance(profile_data, dict):
+                    p_data.update(profile_data)
+            
+            if bio: p_data['bio'] = bio
+            if avatar: p_data['avatar'] = avatar
+
+            if p_data:
+                from .serializers import ProfileSerializer
+                profile_serializer = ProfileSerializer(user.profile, data=p_data, partial=True)
                 if profile_serializer.is_valid():
                     profile_serializer.save()
             

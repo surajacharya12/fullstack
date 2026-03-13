@@ -19,3 +19,17 @@ export const deleteBlog = async (id: number) => {
   const response = await axiosInstance.delete(`blogs/${id}/`);
   return response.data;
 };
+
+export const getProfile = async () => {
+  const response = await axiosInstance.get("profile/");
+  return response.data;
+};
+
+export const updateProfile = async (profileData: any) => {
+  const response = await axiosInstance.put("profile/", profileData, {
+    headers: {
+      'Content-Type': profileData instanceof FormData ? 'multipart/form-data' : 'application/json'
+    }
+  });
+  return response.data;
+};
