@@ -191,7 +191,7 @@ const styles: Record<string, React.CSSProperties> = {
   logoutSm: { border: "none", background: "none", color: "#ef4444", cursor: "pointer", fontSize: "0.85rem" },
 
   tabNav: { display: "flex", gap: "1.5rem", padding: "1rem 12%", borderBottom: "1px solid #f2f2f2", overflowX: "auto" },
-  tabBtn: { background: "none", borderTop: "none", borderLeft: "none", borderRight: "none", borderBottom: "1px solid transparent", color: "#757575", cursor: "pointer", padding: "0.5rem 0", fontSize: "0.9rem" },
+  tabBtn: { background: "none", borderTop: "none", borderLeft: "none", borderRight: "none", borderBottomWidth: "1px", borderBottomStyle: "solid", borderBottomColor: "transparent", color: "#757575", cursor: "pointer", padding: "0.5rem 0", fontSize: "0.9rem" },
   activeTab: { color: "black", borderBottomColor: "black" },
 
   mainLayout: { display: "grid", gridTemplateColumns: "1fr 350px", gap: "4rem", padding: "2rem 12%", maxWidth: 1400, margin: "0 auto" },
